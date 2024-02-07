@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { COLLECTION_ID, DATABASE_ID, databases } from "../appwriteConfig"
 import { ID, Query } from "appwrite"
+import { Trash2 } from "react-feather"
 
 export default function Room() {
   const [messages, setMessages] = useState([])
@@ -38,6 +39,13 @@ export default function Room() {
     setMessages(messages.documents)
   }
 
+  const deleteMessage = async (message_id) => {
+    databases.deleteDocument(DATABASE_ID, COLLECTION_ID, message_id)
+    setMessages((prevState) =>
+      prevState.filter((message) => message.$id !== message_id)
+    )
+  }
+
   return (
     <main className="container">
       <div className="room--container">
@@ -57,15 +65,21 @@ export default function Room() {
         </form>
         <div>
           <div>
-            {messages.map((messages) => (
-              <div key={messages.$id} className="message--wrapper">
-                <div className="message-header">
+            {messages.map((message) => (
+              <div key={message.$id} className="message--wrapper">
+                <div className="message--header">
                   <small className="message-timestamp">
-                    {messages.$createdAt}
+                    {new Date(message.$createdAt).toLocaleString()}
                   </small>
+                  <Trash2
+                    className="delete--btn"
+                    onClick={() => {
+                      deleteMessage(message.$id)
+                    }}
+                  />
                 </div>
                 <div className="message--body">
-                  <span>{messages.body}</span>
+                  <span>{message.body}</span>
                 </div>
               </div>
             ))}
