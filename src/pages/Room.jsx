@@ -32,6 +32,7 @@ export default function Room() {
   const getMessages = async () => {
     const messages = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.orderDesc("$createdAt"),
+      Query.limit(20),
     ])
     console.log(messages)
     setMessages(messages.documents)
