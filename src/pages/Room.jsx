@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { COLLECTION_ID, DATABASE_ID, databases } from "../appwriteConfig"
-import { ID } from "appwrite"
+import { ID, Query } from "appwrite"
 
 export default function Room() {
   const [messages, setMessages] = useState([])
@@ -30,7 +30,9 @@ export default function Room() {
   }
 
   const getMessages = async () => {
-    const messages = await databases.listDocuments(DATABASE_ID, COLLECTION_ID)
+    const messages = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      Query.orderDesc("$createdAt"),
+    ])
     console.log(messages)
     setMessages(messages.documents)
   }
